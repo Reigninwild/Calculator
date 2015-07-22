@@ -1,23 +1,29 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Selector : MonoBehaviour {
+public class Selector : MonoBehaviour
+{
 
-	public static GameObject selectedObject;
+    public delegate void MyDelegate();
+    public static MyDelegate myDelegate;
+
+    public static GameObject selectedObject;
 
     public GameObject actionButton;
     public float rayHeight;
-    
+
     private RaycastHit hit;
     private Ray ray;
-    
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Use this for initialization
+    void Start()
+    {
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
         Vector3 fwd = transform.TransformDirection(Vector3.forward);
         Debug.DrawRay(transform.position, fwd * rayHeight, Color.green);
 
@@ -29,16 +35,23 @@ public class Selector : MonoBehaviour {
             if (hit.collider.tag == "Object")
             {
                 actionButton.SetActive(true);
-				selectedObject = hit.collider.gameObject;
+                selectedObject = hit.collider.gameObject;
             }
+
+#if !MOBILE_INPUT
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                myDelegate();
+            }
+#endif
         }
         else
         {
             actionButton.SetActive(false);
-			selectedObject = null;
+            selectedObject = null;
         }
-	}
-	/*
+    }
+    /*
     public void isThouchObject()
     {
         GameObject g = hit.collider.gameObject;

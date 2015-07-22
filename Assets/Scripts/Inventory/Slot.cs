@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class Slot : MonoBehaviour, IDropHandler {
 	public GameObject item {
@@ -16,10 +17,11 @@ public class Slot : MonoBehaviour, IDropHandler {
 
 	public void OnDrop (PointerEventData eventData)
 	{
-		if (!item) {
+        if (!item)
+        {
 			DragHandler.itemBeingDragged.transform.SetParent(transform);
 			ExecuteEvents.ExecuteHierarchy<IHasChanged>(gameObject, null, (x,y) => x.HasChanged());
-		}
+		}		
 	}
 
 	#endregion
