@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityStandardAssets.Characters.FirstPerson;
+using System;
 
 public class Settings : MonoBehaviour {
 
@@ -17,6 +18,10 @@ public class Settings : MonoBehaviour {
     public GameObject smoothSlider;
     public GameObject sensSlider;
     public Toggle smoothToggle;
+    public GameObject volumeSlider;
+
+    //Graphics buttons
+    public Button[] graphicsButtons;
 
     //Rendering
     public Slider pixelLightCount;
@@ -35,10 +40,11 @@ public class Settings : MonoBehaviour {
     public Slider vSyncCount;
     public Slider lodBias;
     public Slider particalRaycast;
-
+    
 	// Use this for initialization
     void Start()
     {
+        Load();
         //Rendering
         pixelLightCount.value = QualitySettings.pixelLightCount;
         textureQuality.value = QualitySettings.masterTextureLimit;
@@ -60,8 +66,36 @@ public class Settings : MonoBehaviour {
         lodBias.value = QualitySettings.lodBias;
         particalRaycast.value = QualitySettings.particleRaycastBudget;
 	}
+    
+    public void Load()
+    {
+        //Load graphics quality
+        QualitySettings.SetQualityLevel(PlayerPrefs.HasKey("graphics_level") ? PlayerPrefs.GetInt("graphics_level") : 2);
+        //Load controller sens and smooth
+        GameObject player = GameObject.FindWithTag("Player");
+        if (player != null)
+        {
+            player.GetComponent<FirstPersonController>().m_MouseLook.smooth = (PlayerPrefs.GetInt("isSmooth") == 1) ? true : false;
+            player.GetComponent<FirstPersonController>().m_MouseLook.smoothTime = PlayerPrefs.HasKey("smooth") ? PlayerPrefs.GetFloat("smooth") : 10;
+            player.GetComponent<FirstPersonController>().m_MouseLook.XSensitivity = PlayerPrefs.HasKey("sensetivity") ? PlayerPrefs.GetFloat("sensetivity") : 1;
+            player.GetComponent<FirstPersonController>().m_MouseLook.YSensitivity = PlayerPrefs.HasKey("sensetivity") ? PlayerPrefs.GetFloat("sensetivity") : 1;
+        }
+        //Load volume
+        AudioListener.volume = PlayerPrefs.HasKey("volume") ? PlayerPrefs.GetFloat("volume") : 1;
 
-    public void Save()
+        //Init controlls
+        if (PlayerPrefs.GetInt("isSmooth") == 1)
+        {
+            smoothSlider.SetActive(true);
+            smoothToggle.isOn = true;
+        }
+        smoothSlider.GetComponent<Slider>().value = PlayerPrefs.HasKey("smooth") ? PlayerPrefs.GetFloat("smooth") : 10;
+        sensSlider.GetComponent<Slider>().value = PlayerPrefs.HasKey("sensetivity") ? PlayerPrefs.GetFloat("sensetivity") : 1;
+        graphicsButtons[QualitySettings.GetQualityLevel()].interactable = false;
+        volumeSlider.GetComponent<Slider>().value = PlayerPrefs.HasKey("volume") ? PlayerPrefs.GetFloat("volume") : 1;
+    }
+
+    public void SaveVideo()
     {
         //Rendering
         QualitySettings.pixelLightCount = (int)pixelLightCount.value;
@@ -165,6 +199,7 @@ public class Settings : MonoBehaviour {
 
     public void SetQuality(int level)
     {
+        graphicsButtons[QualitySettings.GetQualityLevel()].interactable = true;
         switch (level)
         {
             case 0:
@@ -186,6 +221,8 @@ public class Settings : MonoBehaviour {
                 QualitySettings.SetQualityLevel(5);
                 break;
         }
+        graphicsButtons[level].interactable = false;
+        PlayerPrefs.SetInt("graphics_level", level);
     }
 
     public void AdvancedGraphicSettings()
@@ -201,6 +238,7 @@ public class Settings : MonoBehaviour {
         {
             player.GetComponent<FirstPersonController>().m_MouseLook.smooth = smoothToggle.isOn;
         }
+        PlayerPrefs.SetInt("isSmooth", Convert.ToInt32(smoothToggle.isOn));
     }
 
     public void SmoothChanged(Text text) {
@@ -212,6 +250,7 @@ public class Settings : MonoBehaviour {
         {
             player.GetComponent<FirstPersonController>().m_MouseLook.smoothTime = smooth;
         }
+        PlayerPrefs.SetFloat("smooth", smooth);
     }
 
     public void SensetivityChanged(Text text)
@@ -226,5 +265,13 @@ public class Settings : MonoBehaviour {
             player.GetComponent<FirstPersonController>().m_MouseLook.XSensitivity = sens;
             player.GetComponent<FirstPersonController>().m_MouseLook.YSensitivity = sens;
         }
+        PlayerPrefs.SetFloat("sensetivity", 1);
+    }
+
+    public void VolumeChanged()
+    {
+        float volume = volumeSlider.GetComponent<Slider>().value;
+        AudioListener.volume = volume;
+        PlayerPrefs.SetFloat("volume", volume);
     }
 }

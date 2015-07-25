@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class Selector : MonoBehaviour
 {
@@ -25,17 +26,24 @@ public class Selector : MonoBehaviour
     void Update()
     {
         Vector3 fwd = transform.TransformDirection(Vector3.forward);
-        Debug.DrawRay(transform.position, fwd * rayHeight, Color.green);
 
-        var cam = Camera.main.transform;
-        ray = new Ray(cam.position, fwd);
+#if UNITY_EDITOR
+        Debug.DrawRay(transform.position, fwd * rayHeight, Color.green);
+#endif
+        //var cam = Camera.main.transform;
+        ray = new Ray(transform.position, fwd);
 
         if (Physics.Raycast(ray, out hit, rayHeight))
         {
-            if (hit.collider.tag == "Object")
+            if (hit.collider.tag.Equals("Object"))
             {
                 actionButton.SetActive(true);
                 selectedObject = hit.collider.gameObject;
+            }
+            else
+            {
+                actionButton.SetActive(false);
+                selectedObject = null;
             }
 
 #if !MOBILE_INPUT
@@ -51,11 +59,4 @@ public class Selector : MonoBehaviour
             selectedObject = null;
         }
     }
-    /*
-    public void isThouchObject()
-    {
-        GameObject g = hit.collider.gameObject;
-        Inventory.AddItem(g.GetComponent<Object>());
-        Destroy(g);
-    }*/
 }
