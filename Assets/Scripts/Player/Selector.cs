@@ -4,7 +4,6 @@ using UnityEngine.UI;
 
 public class Selector : MonoBehaviour
 {
-
     public delegate void MyDelegate();
     public static MyDelegate myDelegate;
 
@@ -43,6 +42,15 @@ public class Selector : MonoBehaviour
             else
             {
                 actionButton.SetActive(false);
+                selectedObject = null;
+            }
+
+            if (hit.collider.tag.Equals("Tree"))
+            {
+                selectedObject = hit.collider.gameObject;
+            }
+            else
+            {
                 selectedObject = null;
             }
 
