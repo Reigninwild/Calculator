@@ -4,18 +4,30 @@ using UnityEngine.UI;
 
 public class Axe : MonoBehaviour {
 
+    public Animator armsAnimator;
     public Button button;
 
     private bool hit = false;
     private bool isEquip = false;
-
     GameObject go;
-    
+
+    void OnEnable()
+    {
+
+    }
+
+    void OnDisable()
+    {
+
+    }
+
     IEnumerator WaitAndHit(float waitTime)
     {
+        armsAnimator.SetBool("axeHit", true);
         yield return new WaitForSeconds(waitTime);
-        go = Selector.selectedObject;
-        go.GetComponent<Tree>().HealthDown();
+        armsAnimator.SetBool("axeHit", false);
+        //go = Selector.selectedObject;
+        //go.GetComponent<Tree>().HealthDown();
     }
 
     public void Hit()
@@ -25,21 +37,9 @@ public class Axe : MonoBehaviour {
 
     public void Equip()
     {
-        GameObject arms = GameObject.Find("Arms");
-        Animator animator = arms.GetComponent<Animator>();
-
         isEquip = !isEquip;
-
-        if (isEquip)
-        {
-            animator.SetBool("axe", true);
-        }
-        else
-        {
-            animator.SetBool("axe", false);
-        }
-
-        button.gameObject.SetActive(true);
-        button.onClick.AddListener(delegate() { Hit(); });
+        armsAnimator.SetBool("axe", isEquip);
+        //button.SetActive(isEquip);
+        button.GetComponent<Button>().onClick.AddListener(delegate() { Hit(); });
     }
 }

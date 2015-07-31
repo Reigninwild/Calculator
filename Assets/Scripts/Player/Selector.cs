@@ -41,18 +41,17 @@ public class Selector : MonoBehaviour
             }
             else
             {
-                actionButton.SetActive(false);
-                selectedObject = null;
+                if (hit.collider.tag.Equals("Tree"))
+                {
+                    selectedObject = hit.collider.gameObject;
+                }
+                else
+                {
+                    actionButton.SetActive(false);
+                    selectedObject = null;
+                }
             }
-
-            if (hit.collider.tag.Equals("Tree"))
-            {
-                selectedObject = hit.collider.gameObject;
-            }
-            else
-            {
-                selectedObject = null;
-            }
+             
 
 #if !MOBILE_INPUT
             if (Input.GetKeyDown(KeyCode.E))
