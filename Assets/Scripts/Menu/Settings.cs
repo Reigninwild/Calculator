@@ -255,7 +255,6 @@ public class Settings : MonoBehaviour {
 
     public void SensetivityChanged(Text text)
     {
-
         float sens = sensSlider.GetComponent<Slider>().value;
         text.text = "" + sens;
 
@@ -264,8 +263,8 @@ public class Settings : MonoBehaviour {
         {
             player.GetComponent<FirstPersonController>().m_MouseLook.XSensitivity = sens;
             player.GetComponent<FirstPersonController>().m_MouseLook.YSensitivity = sens;
-        }
-        PlayerPrefs.SetFloat("sensetivity", 1);
+        }           
+        PlayerPrefs.SetFloat("sensetivity", sens);
     }
 
     public void VolumeChanged()

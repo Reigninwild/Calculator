@@ -4,8 +4,8 @@ using UnityEngine.UI;
 
 public class Selector : MonoBehaviour
 {
-    public delegate void MyDelegate();
-    public static MyDelegate myDelegate;
+    public delegate void PickUpDelegate();
+    public static PickUpDelegate pickUpDelegate;
 
     public static GameObject selectedObject;
 
@@ -29,7 +29,6 @@ public class Selector : MonoBehaviour
 #if UNITY_EDITOR
         Debug.DrawRay(transform.position, fwd * rayHeight, Color.green);
 #endif
-        //var cam = Camera.main.transform;
         ray = new Ray(transform.position, fwd);
 
         if (Physics.Raycast(ray, out hit, rayHeight))
@@ -56,7 +55,7 @@ public class Selector : MonoBehaviour
 #if !MOBILE_INPUT
             if (Input.GetKeyDown(KeyCode.E))
             {
-                myDelegate();
+                pickUpDelegate();
             }
 #endif
         }

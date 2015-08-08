@@ -16,8 +16,8 @@ public class Tree : MonoBehaviour {
 
     IEnumerator DestroyTree(float waitTime)
     {
-        gameObject.transform.parent.gameObject.GetComponent<Rigidbody>().isKinematic = false;
-        gameObject.transform.parent.gameObject.GetComponent<Rigidbody>().AddForce(transform.forward * speed);
+        gameObject.GetComponent<Rigidbody>().isKinematic = false;
+        //gameObject.GetComponent<Rigidbody>().AddForce(transform.forward * speed);
         
         yield return new WaitForSeconds(waitTime);
 

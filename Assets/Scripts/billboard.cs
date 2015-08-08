@@ -32,7 +32,8 @@ public class billboard : MonoBehaviour
 	
 	void Update(){
 		if(amActive==true){
-			myContainer.transform.LookAt(myContainer.transform.position + m_Camera.transform.rotation * Vector3.back, m_Camera.transform.rotation * Vector3.up);
+            myContainer.transform.LookAt(m_Camera.transform);
+            //myContainer.transform.LookAt(myContainer.transform.position + m_Camera.transform.rotation * Vector3.back, m_Camera.transform.rotation * Vector3.up);
 		}
 	}
 }

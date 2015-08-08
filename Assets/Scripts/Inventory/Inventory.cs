@@ -22,7 +22,7 @@ public class Inventory : MonoBehaviour, IHasChanged
 
     void Start()
     {
-        Selector.myDelegate = new Selector.MyDelegate(Keep);
+        Selector.pickUpDelegate = new Selector.PickUpDelegate(PickUp);
         dropDelegate = new DropDelegate(Drop);
     }
 
@@ -38,7 +38,7 @@ public class Inventory : MonoBehaviour, IHasChanged
         gamePanel.SetActive(true);
     }
 
-    public void Keep()
+    public void PickUp()
     {
         GameObject keepObject = Selector.selectedObject;
         Item keepObjectItem = keepObject.GetComponent<Item>();
@@ -46,13 +46,12 @@ public class Inventory : MonoBehaviour, IHasChanged
         {
             if (slot.childCount > 0)
             {
-                Item slotItem = slot.GetChild(0).GetComponent<Item>();
-                if (slotItem.type == Item.TypeOfObject.Item)
+                Icon slotItem = slot.GetChild(0).GetComponent<Icon>();
+                if (slotItem.details.type == ItemDetails.TypeOfObject.Item)
                 {
-                    if (slotItem.oName.Equals(keepObjectItem.oName))
+                    if (slotItem.details.name.Equals(keepObjectItem.details.name))
                     {
-                        slotItem.count += keepObjectItem.count;
-                        slotItem.UpdateCount();
+                        slotItem.details.count += keepObjectItem.details.count;
                         Destroy(keepObject);
                         return;
                     }
@@ -74,12 +73,11 @@ public class Inventory : MonoBehaviour, IHasChanged
         {
             if (slot.childCount < 1)
             {
-                GameObject icon = Instantiate(iconPrefabs[keys.IndexOf(item.oName)]);
+                GameObject icon = Instantiate(iconPrefabs[keys.IndexOf(item.details.name)]);
                 icon.name = icon.name.Replace("(Clone)", "");
-                icon.GetComponent<Item>().condition = item.condition;
-                icon.GetComponent<Item>().UpdateCondition();
-                icon.GetComponent<Item>().count = item.count;
-                icon.GetComponent<Item>().UpdateCount();
+                icon.GetComponent<Icon>().details = item.details;
+                icon.GetComponent<Icon>().UpdateCondition();
+                icon.GetComponent<Icon>().UpdateCount();
                 icon.transform.SetParent(slot, false);
                 return;
             }
@@ -90,8 +88,7 @@ public class Inventory : MonoBehaviour, IHasChanged
     {
         Vector3 dropPos = player.transform.position + player.transform.forward *2;
         GameObject dropObject = Instantiate(objectPrefabs[keys.IndexOf(o.name)], dropPos, player.transform.rotation) as GameObject;
-        dropObject.GetComponent<Item>().condition = o.GetComponent<Item>().condition;
-        dropObject.GetComponent<Item>().count = o.GetComponent<Item>().count;
+        dropObject.GetComponent<Item>().details = o.GetComponent<Icon>().details;
     }
 
     #region IHasChanged implementation
