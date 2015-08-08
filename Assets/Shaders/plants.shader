@@ -11,6 +11,7 @@ Shader "plants" {
      Cull Off
      
  CGPROGRAM
+ #pragma multi_compile _ LOD_FADE_CROSSFADE
  #pragma surface surf Lambert alphatest:_Cutoff
  
  sampler2D _MainTex;
@@ -23,7 +24,13 @@ Shader "plants" {
  void surf (Input IN, inout SurfaceOutput o) {
      fixed4 c = tex2D(_MainTex, IN.uv_MainTex) * _Color;
      o.Albedo = c.rgb;
+	 
+	 #ifdef LOD_FADE_CROSSFADE
+            o.Alpha = c.a * unity_LODFade.x;
+	 #else
+
      o.Alpha = c.a;
+	#endif
  }
  ENDCG
  }
