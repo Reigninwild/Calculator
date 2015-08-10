@@ -18,7 +18,7 @@ Shader "plants" {
  fixed4 _Color;
  
  struct Input {
-     float2 uv_MainTex;
+     float2 uv_MainTex; 
  };
  
  void surf (Input IN, inout SurfaceOutput o) {
@@ -26,9 +26,8 @@ Shader "plants" {
      o.Albedo = c.rgb;
 	 
 	 #ifdef LOD_FADE_CROSSFADE
-            o.Alpha = c.a * unity_LODFade.x;
-	 #else
-
+             o.Alpha = c.a * unity_LODFade.x;
+	 #else	
      o.Alpha = c.a;
 	#endif
  }
