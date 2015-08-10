@@ -73,6 +73,7 @@ public class Inventory : MonoBehaviour, IHasChanged
         {
             if (slot.childCount < 1)
             {
+                Debug.Log(item.details.name);
                 GameObject icon = Instantiate(iconPrefabs[keys.IndexOf(item.details.name)]);
                 icon.name = icon.name.Replace("(Clone)", "");
                 icon.GetComponent<Icon>().details = item.details;

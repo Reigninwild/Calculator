@@ -10,8 +10,7 @@ using System.Collections;
 
 
 public class billboard : MonoBehaviour
-{
-	
+{	
 	public Camera m_Camera;
 	public bool amActive =false;
 	public bool autoInit =false;

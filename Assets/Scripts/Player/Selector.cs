@@ -50,9 +50,9 @@ public class Selector : MonoBehaviour
                     selectedObject = null;
                 }
             }
-             
 
-#if !MOBILE_INPUT
+
+#if UNITY_EDITOR
             if (Input.GetKeyDown(KeyCode.E))
             {
                 pickUpDelegate();

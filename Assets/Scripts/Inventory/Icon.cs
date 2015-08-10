@@ -28,7 +28,7 @@ public class Icon : MonoBehaviour {
 
             case ItemDetails.TypeOfObject.Weapon:
                 isEquip = !isEquip;    
-                GameObject.Find("WeaponManager").GetComponent<WeaponManager>().Equip(details.name);
+                GameObject.Find("Arms").GetComponent<WeaponManager>().Equip(details.name);
                 break;
 
             case ItemDetails.TypeOfObject.Note:
