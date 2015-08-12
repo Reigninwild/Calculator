@@ -18,6 +18,8 @@ public class Tree : MonoBehaviour {
 
     public void Drop()
     {
+        if (dropObjectBeforeDestroy == null)
+            return;
         Vector3 position = new Vector3(Random.Range(-1.0F, 1.0F), 2, Random.Range(-1.0F, 1.0F));
         Instantiate(dropObjectBeforeDestroy, gameObject.transform.position + position, Quaternion.identity);
     }

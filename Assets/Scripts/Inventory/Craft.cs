@@ -9,4 +9,16 @@ public class Craft : MonoBehaviour {
 	public bool hasKnife;
 
 	public string craftName;
+
+    public void Craft1()
+    {
+
+    }
+
+    void CheckIngredient()
+    {
+        Inventory inventory = GetComponent<Inventory>();
+
+
+    }
 }

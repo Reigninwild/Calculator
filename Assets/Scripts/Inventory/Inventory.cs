@@ -41,7 +41,14 @@ public class Inventory : MonoBehaviour, IHasChanged
     public void PickUp()
     {
         GameObject keepObject = Selector.selectedObject;
+
+        //Has "Item" component only
+        if (keepObject == null)
+            return;
+        
         Item keepObjectItem = keepObject.GetComponent<Item>();
+
+
         foreach (Transform slot in contentPanel.transform)
         {
             if (slot.childCount > 0)
@@ -52,6 +59,7 @@ public class Inventory : MonoBehaviour, IHasChanged
                     if (slotItem.details.name.Equals(keepObjectItem.details.name))
                     {
                         slotItem.details.count += keepObjectItem.details.count;
+                        slotItem.UpdateCount();
                         Destroy(keepObject);
                         return;
                     }
@@ -91,6 +99,27 @@ public class Inventory : MonoBehaviour, IHasChanged
         GameObject dropObject = Instantiate(objectPrefabs[keys.IndexOf(o.name)], dropPos, player.transform.rotation) as GameObject;
         dropObject.GetComponent<Item>().details = o.GetComponent<Icon>().details;
     }
+
+    //public bool CheckAvail(string itemName, int amount)
+    //{
+    //    foreach (Transform slot in contentPanel.transform)
+    //    {
+    //        if (slot.childCount > 0)
+    //        {
+    //            Icon slotItem = slot.GetChild(0).GetComponent<Icon>();
+
+    //            if (slotItem.details.name.Equals(itemName))
+    //            {
+    //                return (slotItem.details.count >= amount) ? true : false;
+    //            }
+
+    //            if (slotItem.details.type == ItemDetails.TypeOfObject.Item)
+    //            {
+
+    //            }
+    //        }
+    //    }
+    //}
 
     #region IHasChanged implementation
     public void HasChanged()
