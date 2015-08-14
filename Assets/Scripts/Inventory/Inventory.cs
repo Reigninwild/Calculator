@@ -100,26 +100,30 @@ public class Inventory : MonoBehaviour, IHasChanged
         dropObject.GetComponent<Item>().details = o.GetComponent<Icon>().details;
     }
 
-    //public bool CheckAvail(string itemName, int amount)
-    //{
-    //    foreach (Transform slot in contentPanel.transform)
-    //    {
-    //        if (slot.childCount > 0)
-    //        {
-    //            Icon slotItem = slot.GetChild(0).GetComponent<Icon>();
+    public bool CheckAvail(string itemName, int amount)
+    {
+        foreach (Transform slot in contentPanel.transform)
+        {
+            if (slot.childCount > 0)
+            {
+                Icon slotItem = slot.GetChild(0).GetComponent<Icon>();
 
-    //            if (slotItem.details.name.Equals(itemName))
-    //            {
-    //                return (slotItem.details.count >= amount) ? true : false;
-    //            }
+                if (slotItem.details.name.Equals(itemName))
+                {
+                    return (slotItem.details.count >= amount) ? true : false;
+                }
+            }
+        }
 
-    //            if (slotItem.details.type == ItemDetails.TypeOfObject.Item)
-    //            {
+        return false;
+    }
 
-    //            }
-    //        }
-    //    }
-    //}
+    public void CraftItem(string itemName)
+    {
+        Item craft = new Item();
+        craft.details.name = itemName;
+        Add(craft);
+    }
 
     #region IHasChanged implementation
     public void HasChanged()
