@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityStandardAssets.Characters.FirstPerson;
 
 namespace UnityStandardAssets.CrossPlatformInput
 {
@@ -25,6 +26,8 @@ namespace UnityStandardAssets.CrossPlatformInput
 		CrossPlatformInputManager.VirtualAxis m_HorizontalVirtualAxis; // Reference to the joystick in the cross platform input
 		CrossPlatformInputManager.VirtualAxis m_VerticalVirtualAxis; // Reference to the joystick in the cross platform input
 
+        FirstPersonController fpc;
+
 		void OnEnable()
 		{
 			CreateVirtualAxes();
@@ -33,6 +36,7 @@ namespace UnityStandardAssets.CrossPlatformInput
         void Start()
         {
             m_StartPos = transform.position;
+            fpc = GameObject.FindGameObjectWithTag("Player").GetComponent<FirstPersonController>();
         }
 
 		void UpdateVirtualAxes(Vector3 value)
@@ -88,8 +92,12 @@ namespace UnityStandardAssets.CrossPlatformInput
 				delta = Mathf.Clamp(delta, -MovementRange, MovementRange);
 				newPos.y = delta;
 			}
+
 			transform.position = new Vector3(m_StartPos.x + newPos.x, m_StartPos.y + newPos.y, m_StartPos.z + newPos.z);
-			UpdateVirtualAxes(transform.position);
+            UpdateVirtualAxes(transform.position);
+
+            if (fpc.m_IsWalking)
+                fpc.m_WalkSpeed = Vector3.Distance(Vector3.zero, newPos) * 0.05f;
 		}
 
 
