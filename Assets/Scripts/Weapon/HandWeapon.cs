@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 
 public class HandWeapon : MonoBehaviour
 {
@@ -71,7 +70,6 @@ public class HandWeapon : MonoBehaviour
 
     public void Hit()
     {
-        Debug.Log("asdasd");
         if (Time.time >= timestamp)
         {
             StartCoroutine(WaitAndHit(hitTime));
