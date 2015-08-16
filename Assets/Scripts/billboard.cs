@@ -31,22 +31,15 @@ public class billboard : MonoBehaviour
     }
 
 
-    void LateUpdate()
+    void FixedUpdate()
     {
         if (amActive == true)
         {
-
-
-
             Vector3 v = new Vector3();
             v.x = m_Camera.transform.position.x;
             v.y = myContainer.transform.position.y;
             v.z = m_Camera.transform.position.z;
             myContainer.transform.LookAt(v);
-
-
-
-
             //myContainer.transform.LookAt(myContainer.transform.position + m_Camera.transform.rotation * Vector3.back, m_Camera.transform.rotation * Vector3.up);
         }
     }
