@@ -150,8 +150,10 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
             if(Physics.Raycast(transform.position, Vector3.down, out hitInfo))
             {
-                if(hitInfo.collider.tag.Equals("Terrain"))
+                if (hitInfo.collider.tag.Equals("Terrain"))
                     m_FootstepSounds = terrainSurface.GetWalkAudio(transform.position);
+                else
+                    m_FootstepSounds = terrainSurface.walkSound3;
             }
 
             ProgressStepCycle(speed);
