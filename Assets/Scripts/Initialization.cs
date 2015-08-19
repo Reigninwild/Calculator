@@ -7,7 +7,14 @@ public class Initialization : MonoBehaviour {
 
     public Settings settings;
 
-	void Start () {
+#if UNITY_IOS
+    void Awake()
+    {
+        Application.targetFrameRate = 60;
+    }
+#endif
+
+    void Start () {
         settings.Load();   
 	}
 }
