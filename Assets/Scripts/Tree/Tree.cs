@@ -6,12 +6,20 @@ public class Tree : MonoBehaviour {
     public int health = 100;
     public GameObject[] dropObjectsAfterDestroy;
     public GameObject dropObjectBeforeDestroy;
+    Rigidbody rb;
+    //Selector selector;
+
+    void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+        //selector = GameObject.Find("FirstPersonCharacter").GetComponent<Selector>();
+    }
 
     public void HealthDown()
     {
         health -= 10;
         if (health <= 0)
-            StartCoroutine(DestroyTree(3));
+            StartCoroutine(DestroyTree(10));
         else
             Drop();
     }
@@ -26,8 +34,9 @@ public class Tree : MonoBehaviour {
 
     IEnumerator DestroyTree(float waitTime)
     {
-        gameObject.GetComponent<Rigidbody>().isKinematic = false;
-        
+        rb.isKinematic = false;
+        //rb.AddForceAtPosition(selector.GetRayDirection() * 10, selector.GetRayHitPoint(), ForceMode.Force);
+
         yield return new WaitForSeconds(waitTime);
 
         if (dropObjectsAfterDestroy.Length > 0)
@@ -38,6 +47,6 @@ public class Tree : MonoBehaviour {
                 Instantiate(dropObjectsAfterDestroy[i], gameObject.transform.position + position, gameObject.transform.rotation);
             }
         }
-        Destroy(gameObject);
+        Destroy(gameObject.transform.parent.gameObject);
     }
 }

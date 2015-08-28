@@ -21,6 +21,16 @@ public class Selector : MonoBehaviour
 
     }
 
+    public Vector3 GetRayHitPoint()
+    {
+        return hit.point;
+    }
+
+    public Vector3 GetRayDirection()
+    {
+        return ray.direction;
+    }
+
     // Update is called once per frame
     void Update()
     {
