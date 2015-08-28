@@ -2,7 +2,8 @@
 using System.Collections;
 
 public class Tree : MonoBehaviour {
-    
+
+    public float destroyTime = 5f;
     public int health = 100;
     public GameObject[] dropObjectsAfterDestroy;
     public GameObject dropObjectBeforeDestroy;
@@ -19,7 +20,7 @@ public class Tree : MonoBehaviour {
     {
         health -= 10;
         if (health <= 0)
-            StartCoroutine(DestroyTree(10));
+            StartCoroutine(DestroyTree(destroyTime));
         else
             Drop();
     }
