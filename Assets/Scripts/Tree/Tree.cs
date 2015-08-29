@@ -1,19 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Tree : MonoBehaviour {
-
+public class Tree : MonoBehaviour
+{
     public float destroyTime = 5f;
     public int health = 100;
     public GameObject[] dropObjectsAfterDestroy;
     public GameObject dropObjectBeforeDestroy;
     Rigidbody rb;
-    //Selector selector;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        //selector = GameObject.Find("FirstPersonCharacter").GetComponent<Selector>();
     }
 
     public void HealthDown()
@@ -36,6 +34,7 @@ public class Tree : MonoBehaviour {
     IEnumerator DestroyTree(float waitTime)
     {
         rb.isKinematic = false;
+        Cocos();
         //rb.AddForceAtPosition(selector.GetRayDirection() * 10, selector.GetRayHitPoint(), ForceMode.Force);
 
         yield return new WaitForSeconds(waitTime);
@@ -49,5 +48,18 @@ public class Tree : MonoBehaviour {
             }
         }
         Destroy(gameObject.transform.parent.gameObject);
+    }
+
+    public void Cocos()
+    {
+        Transform parent = gameObject.transform.parent;
+        foreach (Transform c in parent.GetComponentsInChildren<Transform>())
+        {
+            if (c.gameObject.name.Equals("cocos") || c.gameObject.name.Equals("bananas"))
+            {
+                c.transform.parent = parent.parent;
+                c.GetComponent<Rigidbody>().isKinematic = false;
+            }
+        }
     }
 }
