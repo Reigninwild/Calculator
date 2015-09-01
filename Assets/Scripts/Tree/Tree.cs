@@ -8,6 +8,7 @@ public class Tree : MonoBehaviour
     public GameObject[] dropObjectsAfterDestroy;
     public GameObject dropObjectBeforeDestroy;
     Rigidbody rb;
+    private int hitCount = 0;
 
     void Start()
     {
@@ -20,7 +21,15 @@ public class Tree : MonoBehaviour
         if (health <= 0)
             StartCoroutine(DestroyTree(destroyTime));
         else
-            Drop();
+        {
+            if (hitCount == 2)
+            {
+                Drop();
+                hitCount = 0;
+            } else {
+                hitCount++;
+            } 
+        }
     }
 
     public void Drop()
