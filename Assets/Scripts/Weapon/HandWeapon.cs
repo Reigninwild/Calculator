@@ -7,7 +7,8 @@ public class HandWeapon : MonoBehaviour
     public enum TypeOfWeapon
     {
         axe,
-        pickaxe
+        pickaxe,
+        stone
     }
 
     public TypeOfWeapon typeOfWeapon;
@@ -51,18 +52,22 @@ public class HandWeapon : MonoBehaviour
 
     IEnumerator WaitAndHit(float waitTime)
     {
+        armsAnimator.SetBool("hit", false);
+        armsAnimator.SetBool("miss", false);
         armsAnimator.SetBool(HIT, true);
         yield return new WaitForSeconds(waitTime);
         armsAnimator.SetBool(HIT, false);
         GameObject hit = HitObject();
         if (hit != null)
         {
+            armsAnimator.SetBool("hit", true);
             audio.clip = hitAudio;
             audio.Play();
             ImpactOnObject(hit);
         }
         else
         {
+            armsAnimator.SetBool("miss", true);
             audio.clip = missAudio;
             audio.Play();
         }
