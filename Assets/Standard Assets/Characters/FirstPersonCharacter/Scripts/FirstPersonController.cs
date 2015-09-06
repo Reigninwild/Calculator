@@ -60,12 +60,12 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private bool m_Jumping;
         private AudioSource m_AudioSource;
 
-        private TerrainSurface terrainSurface;
+        //private TerrainSurface terrainSurface;
 
         // Use this for initialization
         private void Start()
         {
-            terrainSurface = GameObject.Find("Terrain").GetComponent<TerrainSurface>();
+            //terrainSurface = GameObject.Find("Terrain").GetComponent<TerrainSurface>();
             m_CharacterController = GetComponent<CharacterController>();
             m_Camera = Camera.main;
             m_OriginalCameraPosition = m_Camera.transform.localPosition;
@@ -147,14 +147,14 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 m_MoveDir += Physics.gravity * m_GravityMultiplier * Time.fixedDeltaTime;
             }
             m_CollisionFlags = m_CharacterController.Move(m_MoveDir * Time.fixedDeltaTime);
-
+            /*
             if(Physics.Raycast(transform.position, Vector3.down, out hitInfo))
             {
                 if (hitInfo.collider.tag.Equals("Terrain"))
                     m_FootstepSounds = terrainSurface.GetWalkAudio(transform.position);
                 else
                     m_FootstepSounds = terrainSurface.walkSound3;
-            }
+            }*/
 
             ProgressStepCycle(speed);
             UpdateCameraPosition(speed);
