@@ -2,13 +2,17 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class WeaponManager : MonoBehaviour {
-
-    public Animator playerAnimator;
-
+public class WeaponManager : MonoBehaviour
+{
+    private Animator playerAnimator;
     private bool isEquip = false;
     private string currentWeapon;
-    
+
+    public void Start()
+    {
+        playerAnimator = GetComponent<Animator>();
+    }
+
     public void Equip(string weapon)
     {
         if (isEquip)
@@ -30,6 +34,6 @@ public class WeaponManager : MonoBehaviour {
             playerAnimator.SetBool(weapon, true);
             isEquip = true;
             currentWeapon = weapon;
-        }        
+        }
     }
 }
