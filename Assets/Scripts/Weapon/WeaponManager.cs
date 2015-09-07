@@ -5,8 +5,15 @@ using UnityEngine.UI;
 public class WeaponManager : MonoBehaviour
 {
     private Animator playerAnimator;
-    private bool isEquip = false;
+
     private string currentWeapon;
+
+    public AxeWeapon axeWeapon;
+    public StoneWeapon stoneWeapon;
+
+    public GameObject hitButton;
+
+    IAttack attack;
 
     public void Start()
     {
@@ -15,25 +22,42 @@ public class WeaponManager : MonoBehaviour
 
     public void Equip(string weapon)
     {
-        if (isEquip)
-        {
-            playerAnimator.SetBool(currentWeapon, false);
+        if (currentWeapon != weapon)
+            Equip(currentWeapon);
 
-            if (weapon.Equals(currentWeapon))
-            {
-                isEquip = false;
-            }
-            else
-            {
-                playerAnimator.SetBool(weapon, true);
-                currentWeapon = weapon;
-            }
-        }
-        else
+        switch(weapon)
         {
-            playerAnimator.SetBool(weapon, true);
-            isEquip = true;
-            currentWeapon = weapon;
+            case "axe":
+                currentWeapon = axeWeapon.Equip() == true ? weapon : "";
+                attack = axeWeapon;
+                break;
+
+            case "stone":
+                currentWeapon = stoneWeapon.Equip() == true ? weapon : "";
+                attack = stoneWeapon;
+                break;
         }
+
+        if (currentWeapon == "")
+            hitButton.SetActive(false);
+        else
+            hitButton.SetActive(true);
+    }
+
+    void FixedUpdate()
+    {
+#if !MOBILE_INPUT
+        if (Input.GetKey(KeyCode.Q))
+        {
+            attack.Attack();
+        }
+#endif
+
+#if MOBILE_INPUT
+        if (HitButton.isDown)
+        {
+            attack.Attack();
+        }
+#endif
     }
 }
