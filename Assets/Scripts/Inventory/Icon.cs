@@ -7,6 +7,8 @@ public class Icon : MonoBehaviour {
     public ItemDetails details;
     public bool isEquip = false;
 
+    public delegate void Condition(int value);
+
     void Start()
     {
         details.name = gameObject.name.Replace("(Clone)", "");
@@ -27,8 +29,9 @@ public class Icon : MonoBehaviour {
                 break;
 
             case ItemDetails.TypeOfObject.Weapon:
-                isEquip = !isEquip;    
-                GameObject.Find("Arms").GetComponent<WeaponManager>().Equip(details.name);
+                isEquip = !isEquip;
+                Condition condition = UpdateCondition; 
+                GameObject.Find("Arms").GetComponent<WeaponManager>().Equip(details.name, condition);
                 break;
 
             case ItemDetails.TypeOfObject.Note:
@@ -44,5 +47,11 @@ public class Icon : MonoBehaviour {
     public void UpdateCondition()
     {
         gameObject.transform.FindChild("Slider").GetComponent<Slider>().value = details.condition;
+    }
+
+    public void UpdateCondition(int value)
+    {
+        details.condition += value;
+        UpdateCondition();
     }
 }

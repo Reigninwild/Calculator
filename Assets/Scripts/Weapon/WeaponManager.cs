@@ -10,6 +10,7 @@ public class WeaponManager : MonoBehaviour
 
     public AxeWeapon axeWeapon;
     public StoneWeapon stoneWeapon;
+    public Torch torchWeapon;
 
     public GameObject hitButton;
 
@@ -20,21 +21,28 @@ public class WeaponManager : MonoBehaviour
         playerAnimator = GetComponent<Animator>();
     }
 
-    public void Equip(string weapon)
+    public void Equip(string weapon, Icon.Condition c)
     {
-        if (currentWeapon != weapon)
-            Equip(currentWeapon);
+        if(weapon != "torch")
+        {
+            if (currentWeapon != weapon)
+                Equip(currentWeapon, c);
+        }
 
         switch(weapon)
         {
             case "axe":
-                currentWeapon = axeWeapon.Equip() == true ? weapon : "";
+                currentWeapon = axeWeapon.Equip(c) == true ? weapon : "";
                 attack = axeWeapon;
                 break;
 
             case "stone":
-                currentWeapon = stoneWeapon.Equip() == true ? weapon : "";
+                currentWeapon = stoneWeapon.Equip(c) == true ? weapon : "";
                 attack = stoneWeapon;
+                break;
+
+            case "torch":
+                torchWeapon.Equip(c);
                 break;
         }
 

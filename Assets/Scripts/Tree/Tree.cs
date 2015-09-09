@@ -3,32 +3,44 @@ using System.Collections;
 
 public class Tree : MonoBehaviour
 {
-    public float destroyTime = 5f;
+    [Header("Здоровье")]
     public int health = 100;
+
+    [Header("Объекты выпадающие из дерева во время рубки")]
     public GameObject[] dropObjectsAfterDestroy;
+
+    [Header("Объект выпадающий после рубки")]
     public GameObject dropObjectBeforeDestroy;
-    Rigidbody rb;
+
+    [Header("Звук падающего дерева")]
+    public AudioClip treeFallDownAudio;
+
+    Animator animator;
+    AudioSource audio;
     private int hitCount = 0;
 
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        animator = GetComponent<Animator>();
+        audio = GetComponent<AudioSource>();
     }
 
     public void HealthDown()
     {
         health -= 10;
         if (health <= 0)
-            StartCoroutine(DestroyTree(destroyTime));
+            animator.SetBool("down", true);
         else
         {
             if (hitCount == 2)
             {
                 Drop();
                 hitCount = 0;
-            } else {
+            }
+            else
+            {
                 hitCount++;
-            } 
+            }
         }
     }
 
@@ -40,22 +52,19 @@ public class Tree : MonoBehaviour
         Instantiate(dropObjectBeforeDestroy, gameObject.transform.position + position, Quaternion.identity);
     }
 
-    IEnumerator DestroyTree(float waitTime)
+    public void DestroyTree()
     {
-        rb.isKinematic = false;
-        Cocos();
-        //rb.AddForceAtPosition(selector.GetRayDirection() * 10, selector.GetRayHitPoint(), ForceMode.Force);
-
-        yield return new WaitForSeconds(waitTime);
-
         if (dropObjectsAfterDestroy.Length > 0)
         {
+            float heightObject = transform.position.y + 8;
+
             for (int i = 0; i < dropObjectsAfterDestroy.Length; i++)
             {
-                Vector3 position = new Vector3(Random.Range(-1.0F, 1.0F), 0, Random.Range(-1.0F, 1.0F));
-                Instantiate(dropObjectsAfterDestroy[i], gameObject.transform.position + position, gameObject.transform.rotation);
+                heightObject += 3.5f;
+                Instantiate(dropObjectsAfterDestroy[i], transform.position + transform.up * heightObject, transform.rotation);
             }
         }
+
         Destroy(gameObject.transform.parent.gameObject);
     }
 
@@ -70,5 +79,11 @@ public class Tree : MonoBehaviour
                 c.GetComponent<Rigidbody>().isKinematic = false;
             }
         }
+    }
+
+    public void PlayTreeFallDownAudio()
+    {
+        audio.clip = treeFallDownAudio;
+        audio.Play();
     }
 }
