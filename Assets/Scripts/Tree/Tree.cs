@@ -3,6 +3,11 @@ using System.Collections;
 
 public class Tree : MonoBehaviour
 {
+    public const float RESTORE_TIME = 60;
+
+    [Header("Падающее")]
+    public bool breakable = true;
+
     [Header("Здоровье")]
     public int health = 100;
 
@@ -18,10 +23,12 @@ public class Tree : MonoBehaviour
     Animator animator;
     AudioSource audio;
     private int hitCount = 0;
+    private bool restore = true;
 
     void Start()
     {
-        animator = GetComponent<Animator>();
+        if (breakable)
+            animator = GetComponent<Animator>();
         audio = GetComponent<AudioSource>();
     }
 
@@ -29,7 +36,13 @@ public class Tree : MonoBehaviour
     {
         health -= 10;
         if (health <= 0)
-            animator.SetBool("down", true);
+        {
+            if (breakable)
+                animator.SetBool("down", true);
+            else
+                if (restore)
+                StartCoroutine(RestoreTreeHealth());
+        }
         else
         {
             if (hitCount == 2)
@@ -42,6 +55,14 @@ public class Tree : MonoBehaviour
                 hitCount++;
             }
         }
+    }
+
+    IEnumerator RestoreTreeHealth()
+    {
+        restore = false;
+        yield return new WaitForSeconds(RESTORE_TIME);
+        health = 100;
+        restore = true;
     }
 
     public void Drop()
