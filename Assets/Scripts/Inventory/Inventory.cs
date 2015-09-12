@@ -8,22 +8,32 @@ public class Inventory : MonoBehaviour, IHasChanged
 {
     public delegate void DropDelegate(GameObject o);
     public static DropDelegate dropDelegate;
+    public static DropDelegate destroyDelegate;
 
     public Transform player;
     public GameObject contentPanel;
     public GameObject mainPanel;
     public GameObject gamePanel;
 
-    public List<GameObject> objectPrefabs;
-    public List<GameObject> iconPrefabs;
-    public List<string> keys;
+    public GameObject iconPrefab;
 
-    public int engagedSlots;
+    [Header("Список предметов в инвентаре")]
+    public List<ItemDetails> itemList;
+
+    [Header("Список всех объектов игры")]
+    public List<GameObject> itemObjectList;
 
     void Start()
     {
+        Init();
         Selector.pickUpDelegate = new Selector.PickUpDelegate(PickUp);
         dropDelegate = new DropDelegate(Drop);
+        destroyDelegate = new DropDelegate(DestroyItem);
+    }
+
+    private void Init()
+    {
+        itemList = new List<ItemDetails>();
     }
 
     public void Show()
@@ -45,46 +55,58 @@ public class Inventory : MonoBehaviour, IHasChanged
         //Has "Item" component only
         if (keepObject == null)
             return;
-        
+
         Item keepObjectItem = keepObject.GetComponent<Item>();
 
-
-        foreach (Transform slot in contentPanel.transform)
+        if (Add(keepObjectItem))
         {
-            if (slot.childCount > 0)
-            {
-                Icon slotItem = slot.GetChild(0).GetComponent<Icon>();
-                if (slotItem.details.type == ItemDetails.TypeOfObject.Item)
-                {
-                    if (slotItem.details.name.Equals(keepObjectItem.details.name))
-                    {
-                        slotItem.details.count += keepObjectItem.details.count;
-                        slotItem.UpdateCount();
-                        Destroy(keepObject);
-                        return;
-                    }
-                }
-            }
-        }
-
-        if (engagedSlots < 16)
-        {
-            Add(keepObjectItem);
-            engagedSlots++;
             Destroy(keepObject);
         }
     }
 
-    public void Add(Item item)
+    public bool Add(Item item)
+    {
+        if (item.details.type == ItemDetails.TypeOfObject.Weapon)
+        {
+            if (itemList.Count < 16)
+            {
+                itemList.Add(item.details);
+                CreateIcon(item.details);
+                return true;
+            }
+        }
+        else
+        {
+            foreach (ItemDetails i in itemList)
+            {
+                if (item.details.name.Equals(i.name))
+                {
+                    i.count += item.details.count;
+                    UpdateIcon(i);
+                    return true;
+                }
+            }
+
+            if (itemList.Count < 16)
+            {
+                itemList.Add(item.details);
+                CreateIcon(item.details);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void CreateIcon(ItemDetails item)
     {
         foreach (Transform slot in contentPanel.transform)
         {
             if (slot.childCount < 1)
             {
-                Debug.Log(item.details.name);
-                GameObject icon = Instantiate(iconPrefabs[keys.IndexOf(item.details.name)]);
+                GameObject icon = Instantiate(iconPrefab);
                 icon.name = icon.name.Replace("(Clone)", "");
-                icon.GetComponent<Icon>().details = item.details;
+                icon.GetComponent<Icon>().details = item;
                 icon.GetComponent<Icon>().UpdateCondition();
                 icon.GetComponent<Icon>().UpdateCount();
                 icon.transform.SetParent(slot, false);
@@ -93,33 +115,76 @@ public class Inventory : MonoBehaviour, IHasChanged
         }
     }
 
-    public void Drop(GameObject o)
+    public void UpdateIcon(ItemDetails item)
     {
-        Vector3 dropPos = player.transform.position + player.transform.forward *2;
-        GameObject dropObject = Instantiate(objectPrefabs[keys.IndexOf(o.name)], dropPos, player.transform.rotation) as GameObject;
-        dropObject.GetComponent<Item>().details = o.GetComponent<Icon>().details;
+        foreach (Transform slot in contentPanel.transform)
+        {
+            if (slot.childCount > 1)
+            {
+                Icon icon = slot.GetChild(0).GetComponent<Icon>();
+                if (ReferenceEquals(icon.details, item))
+                {
+                    icon.UpdateCondition();
+                    icon.UpdateCount();
+                }
+            }
+        }
     }
 
-    //public bool CheckAvail(string itemName, int amount)
-    //{
-    //    foreach (Transform slot in contentPanel.transform)
-    //    {
-    //        if (slot.childCount > 0)
-    //        {
-    //            Icon slotItem = slot.GetChild(0).GetComponent<Icon>();
+    public GameObject FindObject(string name)
+    {
+        foreach (GameObject i in itemObjectList)
+        {
+            if (i.GetComponent<Item>().details.name.Equals(name))
+            {
+                return i;
+            }
+        }
 
-    //            if (slotItem.details.name.Equals(itemName))
-    //            {
-    //                return (slotItem.details.count >= amount) ? true : false;
-    //            }
+        return null;
+    }
 
-    //            if (slotItem.details.type == ItemDetails.TypeOfObject.Item)
-    //            {
+    public void Drop(GameObject iconObject)
+    {
+        Vector3 dropPos = player.transform.position + player.transform.forward * 2;
+        Icon icon = iconObject.GetComponent<Icon>();
 
-    //            }
-    //        }
-    //    }
-    //}
+        GameObject dropObject = Instantiate(
+            FindObject(icon.details.name),
+            dropPos,
+            player.transform.rotation) as GameObject;
+
+        dropObject.GetComponent<Item>().details = icon.details;
+
+        for (int i = 0; i < itemList.Count; i++)
+        {
+            if (ReferenceEquals(icon.details, itemList[i]))
+            {
+                itemList.Remove(itemList[i]);
+            }
+        }
+
+        if (icon.isEquip)
+            icon.OnClickItemButton();
+    }
+    
+    public void DestroyItem(GameObject iconObject)
+    {
+        Icon icon = iconObject.GetComponent<Icon>();
+        
+        for (int i = 0; i < itemList.Count; i++)
+        {
+            if (ReferenceEquals(icon.details, itemList[i]))
+            {
+                itemList.Remove(itemList[i]);
+            }
+        }
+
+        if (icon.isEquip)
+            icon.OnClickItemButton();
+
+        Destroy(iconObject);
+    }
 
     #region IHasChanged implementation
     public void HasChanged()
