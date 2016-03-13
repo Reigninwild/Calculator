@@ -1,2 +1,1 @@
-# Calculator
-Project mooved to bitbucket
+# Mooved to bitbucket
